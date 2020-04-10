@@ -41,7 +41,7 @@ const Course = ({ course }) => {
   const Content = ({ parts }) => {
     return (
       <div>
-        {parts.map(part => <Part part={part.name} exercise={part.exercises} key={part.id}/>)}
+        {parts.map(part => <Part part={part.name} exercise={part.exercises} key={part.id} />)}
       </div>
     )
   }
@@ -52,10 +52,13 @@ const Course = ({ course }) => {
     )
   }
 
+  const total = course.parts.reduce((s, p) => (s + p.exercises), 0)
+
   return (
     <div>
       <Header course={course} />
       <Content parts={course.parts} />
+      <b>total of {total} exercises</b>
     </div>
   )
 }
