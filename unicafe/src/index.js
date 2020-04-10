@@ -36,19 +36,24 @@ const Statistics = ({ good, neutral, bad }) => {
     )
 
   return (
-    <div>
-      <Statistic text="good" value={good} />
-      <Statistic text="neutral" value={neutral} />
-      <Statistic text="bad" value={bad} />
-      <Statistic text="all" value={good + neutral + bad} />
-      <Statistic text="average" value={(good - bad) / (good + neutral + bad)} />
-      <Statistic text="positive" value={good / (good + neutral + bad) * 100} />
-    </div>
+    <table>
+      <tbody>
+        <Statistic text="good" value={good} />
+        <Statistic text="neutral" value={neutral} />
+        <Statistic text="bad" value={bad} />
+        <Statistic text="all" value={good + neutral + bad} />
+        <Statistic text="average" value={(good - bad) / (good + neutral + bad)} />
+        <Statistic text="positive" value={(good / (good + neutral + bad) * 100) + '%'} />
+      </tbody>
+    </table>
   )
 }
 
 const Statistic = ({ text, value }) => (
-  <p>{text} {value}</p>
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
 )
 
 ReactDOM.render(<App />,
