@@ -6,7 +6,8 @@ const App = (props) => {
 
   return (
     <div>
-      {props.anecdotes[selected]}
+      <p>{props.anecdotes[selected]}</p>
+      <button onClick={() => setSelected(getRandomIndex(anecdotes.length))}>next anecdote</button>
     </div>
   )
 }
@@ -19,6 +20,11 @@ const anecdotes = [
   'Premature optimization is the root of all evil.',
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
+
+const getRandomIndex = (max) => {
+  max = Math.floor(max)
+  return Math.floor(Math.random() * max)
+}
 
 ReactDOM.render(
   <App anecdotes={anecdotes} />,
