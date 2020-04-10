@@ -28,7 +28,7 @@ const App = () => {
     event.preventDefault()
     console.log(event.target)
     if (persons.find(p => p.name === newName)) {
-      window.alert(`${newName} is already added to phonebook33`);
+      window.alert(`${newName} is already added to phonebook`);
     } else {
       const newPerson = { name: newName, number: newNumber }
       setPersons(persons.concat([newPerson]))
@@ -38,23 +38,37 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>filter shown with <input value={filter} onChange={handleNewFilter}/></div>
+      <Filter filter={filter} handleNewFilter={handleNewFilter} />
       <h3>Add New Person</h3>
-      <form onSubmit={addNewPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNewName} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNewNumber} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {persons.filter(p => p.name.toLowerCase().includes(filter.toLowerCase())).map(p => <p key={p.name}>{p.name} {p.number}</p>)}
+      <PersonForm newName={newName} newNumber={newNumber} handleNewName={handleNewName} handleNewNumber={handleNewNumber} addNewPerson={addNewPerson} />
+      <h3>Numbers</h3>
+      <Persons persons={persons} filter={filter} />
     </div>
   )
 }
+
+const Filter = ({ filter, handleNewFilter }) => (
+  <div>filter shown with <input value={filter} onChange={handleNewFilter} /></div>
+)
+
+const PersonForm = ({ newName, newNumber, handleNewName, handleNewNumber, addNewPerson }) => (
+  <form onSubmit={addNewPerson}>
+    <div>
+      name: <input value={newName} onChange={handleNewName} />
+    </div>
+    <div>
+      number: <input value={newNumber} onChange={handleNewNumber} />
+    </div>
+    <div>
+      <button type="submit">add</button>
+    </div>
+  </form>
+)
+
+const Persons = ({ persons, filter }) => (
+  <div>
+    {persons.filter(p => p.name.toLowerCase().includes(filter.toLowerCase())).map(p => <p key={p.name}>{p.name} {p.number}</p>)}
+  </div>
+)
 
 export default App
