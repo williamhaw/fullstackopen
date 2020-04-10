@@ -7,13 +7,28 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
+
+
   return (
     <div>
-      code here
+      <h1>Give Feedback</h1>
+      <Button text={"good"} handleClick={() => setGood(good + 1)} />
+      <Button text={"neutral"} handleClick={() => setNeutral(neutral + 1)} />
+      <Button text={"bad"} handleClick={() => setBad(bad + 1)} />
+      <h1>Statistics</h1>
+      <p>good {good}</p>
+      <p>neutral {neutral}</p>
+      <p>bad {bad}</p>
     </div>
   )
 }
 
-ReactDOM.render(<App />, 
+const Button = ({ text, handleClick }) => (
+  <button onClick={handleClick}>
+    {text}
+  </button>
+)
+
+ReactDOM.render(<App />,
   document.getElementById('root')
 )
