@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
+    personService
+      .getAll()
       .then(response => setPersons(response.data))
   }, [])
 
@@ -32,9 +32,9 @@ const App = () => {
       window.alert(`${newName} is already added to phonebook`);
     } else {
       const newPerson = { name: newName, number: newNumber }
-      axios
-        .post('http://localhost:3001/persons', newPerson)
-        .then(response =>{
+      personService
+        .create(newPerson)
+        .then(response => {
           setPersons(persons.concat([response.data]))
           setNewName('')
           setNewNumber('')
