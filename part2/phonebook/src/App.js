@@ -7,7 +7,7 @@ const App = () => {
     personService
       .getAll()
       .then(response => setPersons(response.data))
-  }, [persons])
+  }, [])
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -29,7 +29,21 @@ const App = () => {
     event.preventDefault()
     console.log(event.target)
     if (persons.find(p => p.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`);
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        const person = { ...persons.find(p => p.name === newName) }
+        person.number = newNumber
+        personService
+          .replacePerson(person)
+          .then(() => {
+            personService
+              .getAll()
+              .then(response => setPersons(response.data))
+              .then(() => {
+                setNewName('')
+                setNewNumber('')
+              })
+          })
+      }
     } else {
       const newPerson = { name: newName, number: newNumber }
       personService
@@ -44,8 +58,13 @@ const App = () => {
 
   const handleDeletion = (id) => {
     if (window.confirm(`Delete ${persons.find(p => p.id === id).name}?`)) {
-      personService.deletePerson(id)
-      setPersons(persons.filter(p => p.id === id))
+      personService
+        .deletePerson(id)
+        .then(() => {
+          personService
+            .getAll()
+            .then(response => setPersons(response.data))
+        })
     }
   }
 
@@ -56,7 +75,7 @@ const App = () => {
       <h3>Add New Person</h3>
       <PersonForm newName={newName} newNumber={newNumber} handleNewName={handleNewName} handleNewNumber={handleNewNumber} addNewPerson={addNewPerson} />
       <h3>Numbers</h3>
-      <Persons persons={persons} filter={filter} handleDeletion={handleDeletion}/>
+      <Persons persons={persons} filter={filter} handleDeletion={handleDeletion} />
     </div>
   )
 }

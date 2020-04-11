@@ -13,4 +13,8 @@ const deletePerson = id => {
   return axios.delete(baseUrl + id.toString())
 }
 
-export default { getAll, create, deletePerson }
+const replacePerson = person => {
+  return axios.put(baseUrl + person.id.toString(), person)
+}
+
+export default { getAll, create, deletePerson, replacePerson }
