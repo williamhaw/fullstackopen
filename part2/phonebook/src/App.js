@@ -43,11 +43,18 @@ const App = () => {
               .then(() => {
                 setNewName('')
                 setNewNumber('')
-                setMessage(`Changed number for ${newName}`)
+                setMessage({ message: `Changed number for ${newName}`, isSuccess: true })
                 setTimeout(() => {
                   setMessage(null)
                 }, 5000)
               })
+
+          })
+          .catch(error => {
+            setMessage({ message: `Information of ${newName} has already been removed from server`, isSuccess: false })
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
           })
       }
     } else {
@@ -58,7 +65,7 @@ const App = () => {
           setPersons(persons.concat([response.data]))
           setNewName('')
           setNewNumber('')
-          setMessage(`Added ${newName}`)
+          setMessage({ message: `Added ${newName}`, isSuccess: true })
           setTimeout(() => {
             setMessage(null)
           }, 5000)
@@ -118,13 +125,15 @@ const Persons = ({ persons, filter, handleDeletion }) => (
 )
 
 const Notification = ({ message }) => {
-  if(message === null){
+  if (message === null) {
     return null
   }
 
+  const messageClass = message.isSuccess ? "success" : "error"
+
   return (
-    <div className="success">
-      {message}
+    <div className={messageClass}>
+      {message.message}
     </div>
   )
 }
