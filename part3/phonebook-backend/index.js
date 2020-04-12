@@ -26,10 +26,6 @@ const errorHandler = (error, request, response, next) => {
 
 app.use(errorHandler)
 
-const generateId = () => {
-  return Math.floor(Math.random() * 45987235)
-}
-
 app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
@@ -52,8 +48,7 @@ app.post('/api/persons', (req, res) => {
 
   const person = new Person({
     name: body.name,
-    number: body.number,
-    id: generateId()
+    number: body.number
   })
 
   person.save().then((response) => {
@@ -63,7 +58,7 @@ app.post('/api/persons', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
-  Person.find({ id: req.params.id })
+  Person.findById(req.params.id)
     .then(person => {
       if (person) {
         res.json(person)
@@ -85,17 +80,15 @@ app.put('/api/persons/:id', (req, res, next) => {
 
   const updatePerson = {
     name: body.name,
-    number: body.number,
-    id: req.params.id
+    number: body.number
   }
 
-  Person.findOneAndUpdate({ id: req.params.id }, updatePerson, (err) => { console.error(err) })
+  Person.findByIdAndUpdate(req.params.id, updatePerson, (err) => { console.error(err) })
   res.status(204).end()
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  Person.findOneAndDelete({ id: id }, (err) => { console.error(err) })
+  Person.findByIdAndRemove(req.params.id, (err) => { console.error(err) })
   res.status(204).end()
 })
 

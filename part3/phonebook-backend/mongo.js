@@ -15,8 +15,15 @@ if (process.argv.length < 3) {
 
   const personSchema = new mongoose.Schema({
     name: String,
-    number: String,
-    id: Number
+    number: String
+  })
+
+  personSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+      returnedObject.id = returnedObject._id.toString()
+      delete returnedObject._id
+      delete returnedObject.__v
+    }
   })
 
   const Person = mongoose.model('Person', personSchema)
@@ -36,8 +43,7 @@ if (process.argv.length < 3) {
 
     const person = new Person({
       name: newName,
-      number: newNumber,
-      id: generateId()
+      number: newNumber
     })
 
     person.save().then(response => {
