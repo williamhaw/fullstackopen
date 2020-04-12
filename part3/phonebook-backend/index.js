@@ -9,10 +9,22 @@ const Person = require('./models/person')
 
 morgan.token('body', (req) => (JSON.stringify(req.body)))
 
+app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(cors())
-app.use(express.static('build'))
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 const generateId = () => {
   return Math.floor(Math.random() * 45987235)
@@ -50,14 +62,16 @@ app.post('/api/persons', (req, res) => {
   res.json(person)
 })
 
-app.get('/api/persons/:id', (req, res) => {
-  Person.find({ id: req.params.id }).then(person => {
-    if (person) {
-      res.json(person)
-    } else {
-      res.status(404).end()
-    }
-  })
+app.get('/api/persons/:id', (req, res, next) => {
+  Person.find({ id: req.params.id })
+    .then(person => {
+      if (person) {
+        res.json(person)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res) => {
