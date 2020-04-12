@@ -1,0 +1,17 @@
+note over browser:
+submit clicked
+end note
+note over browser:
+new note object created
+and pushed into notes array
+end note
+note over browser:
+text field cleared
+end note
+note over browser:
+DOM nodes inside 'notes' div are redrawn
+end note
+note over browser:
+new note object is put into a POST body
+end note
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note
