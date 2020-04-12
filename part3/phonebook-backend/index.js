@@ -14,17 +14,7 @@ app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(cors())
 
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
 
-  if (error.name === 'CastError' && error.kind === 'ObjectId') {
-    return response.status(400).send({ error: 'malformatted id' })
-  }
-
-  next(error)
-}
-
-app.use(errorHandler)
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
@@ -54,7 +44,7 @@ app.post('/api/persons', (req, res, next) => {
   person.save()
     .then((p) => {
       console.log('person saved!')
-      res.json(person)
+      res.json(p)
     })
     .catch(error => next(error))
 })
@@ -102,6 +92,17 @@ app.get('/info', (req, res) => {
       `)
     })
 })
+
+const errorHandler = (error, request, response, next) => {
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, '0.0.0.0', () => {

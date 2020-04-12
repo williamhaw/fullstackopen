@@ -14,8 +14,8 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   })
 
 const personSchema = new mongoose.Schema({
-  name: { type: String, minlength: 3, required: true, unique: true },
-  number: { type: String, minlength: 8, required: true }
+  name: { type: String, minlength: [3, 'Name must have at least 3 characters'], required: true, unique: true },
+  number: { type: String, minlength: [8, 'Number must have at least 8 digits'], required: true }
 })
 
 personSchema.plugin(uniqueValidator)

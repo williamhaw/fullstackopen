@@ -72,7 +72,11 @@ const App = () => {
         })
         .catch(error => {
           console.log(error.response.data)
-          setMessage({ message: `${error.response.data}`, isSuccess: false })
+          let errorMessage = error.response.data
+          if(errorMessage.error){
+            errorMessage = errorMessage.error
+          }
+          setMessage({ message: `${errorMessage}`, isSuccess: false })
           setTimeout(() => {
             setMessage(null)
           }, 5000)
