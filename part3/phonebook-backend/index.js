@@ -1,4 +1,6 @@
 require('dotenv').config()
+const process = require('process')
+const console = require('console')
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
@@ -75,13 +77,15 @@ app.put('/api/persons/:id', (req, res, next) => {
     number: body.number
   }
 
-  Person.findByIdAndUpdate(req.params.id, updatePerson, (err) => { console.error(err) })
-  res.status(204).end()
+  Person.findByIdAndUpdate(req.params.id, updatePerson)
+    .then(() => { res.status(204).end() })
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  Person.findByIdAndRemove(req.params.id, (err) => { console.error(err) })
-  res.status(204).end()
+app.delete('/api/persons/:id', (req, res, next) => {
+  Person.findByIdAndRemove(req.params.id)
+    .then(() => { res.status(204).end() })
+    .catch(error => next(error))
 })
 
 app.get('/info', (req, res) => {

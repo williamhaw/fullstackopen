@@ -1,8 +1,6 @@
+const process = require('process')
+const console = require('console')
 const mongoose = require('mongoose')
-
-const generateId = () => {
-  return Math.floor(Math.random() * 45987235)
-}
 
 if (process.argv.length < 3) {
   console.log('Not enough parameters')
@@ -46,8 +44,8 @@ if (process.argv.length < 3) {
       number: newNumber
     })
 
-    person.save().then(response => {
-      console.log(`person saved!`)
+    person.save().then(() => {
+      console.log('person saved!')
       mongoose.connection.close()
     })
 
