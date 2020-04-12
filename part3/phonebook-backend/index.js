@@ -1,8 +1,11 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 
 const app = express()
+
+const Person = require('./models/person')
 
 morgan.token('body', (req) => (JSON.stringify(req.body)))
 
@@ -43,7 +46,10 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  Person.find({})
+    .then(persons => {
+      res.json(persons)
+    })
 })
 
 app.post('/api/persons', (req, res) => {
@@ -72,14 +78,13 @@ app.post('/api/persons', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find(p => p.id === id)
-
-  if (person) {
-    res.json(person)
-  } else {
-    res.status(404).end()
-  }
+  Person.find({ id: req.params.id }).then(person => {
+    if (person) {
+      res.json(person)
+    } else {
+      res.status(404).end()
+    }
+  })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -89,9 +94,12 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 
 app.get('/info', (req, res) => {
-  res.send(`Phonebook has info for ${persons.length} people
-  <p>${new Date()}</p>
-  `)
+  Person.find({})
+    .then(persons => {
+      res.send(`Phonebook has info for ${persons.length} people
+        <p>${new Date()}</p>
+      `)
+    })
 })
 
 const PORT = process.env.PORT || 3001
