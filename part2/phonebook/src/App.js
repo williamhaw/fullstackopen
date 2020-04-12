@@ -70,6 +70,13 @@ const App = () => {
             setMessage(null)
           }, 5000)
         })
+        .catch(error => {
+          console.log(error.response.data)
+          setMessage({ message: `${error.response.data}`, isSuccess: false })
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        })
     }
   }
 

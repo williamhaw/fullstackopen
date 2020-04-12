@@ -37,7 +37,7 @@ app.get('/api/persons', (req, res) => {
     })
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
   if (!body.name || !body.number) {
@@ -51,10 +51,12 @@ app.post('/api/persons', (req, res) => {
     number: body.number
   })
 
-  person.save().then((response) => {
-    console.log('person saved!')
-  })
-  res.json(person)
+  person.save()
+    .then((p) => {
+      console.log('person saved!')
+      res.json(person)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
