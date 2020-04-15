@@ -51,7 +51,7 @@ test('when blog post is added through POST, the database has one more blog', asy
     likes: 2
   }
 
-  await api.post('/api/blogs', newBlog)
+  await api.post('/api/blogs').send(newBlog)
   const response = await api.get('/api/blogs')
   expect(response.body.length).toBe(initialBlogs.length + 1)
 })
@@ -60,12 +60,21 @@ test('when blog post is added through POST without likes, the likes count defaul
   const newBlog = {
     title: "Type wars",
     author: "Robert C. Martin",
-    url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+    url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html"
+  }
+
+  const response = await api.post('/api/blogs').send(newBlog)
+  expect(response.body.likes).toBe(0)
+})
+
+test('when blog post is added through POST without title and url, a 400 error is returned', async () => {
+  const newBlog = {
+    author: "Robert C. Martin",
     likes: 2
   }
 
-  const response = await api.post('/api/blogs', newBlog)
-  expect(response.body.likes).toBe(0)
+  const response = await api.post('/api/blogs').send(newBlog)
+  expect(response.status).toBe(400)
 })
 
 afterAll(() => {
