@@ -41,7 +41,19 @@ test('blogs are returned as JSON array', async () => {
   response.body.forEach(blog => {
     expect(blog.id).toBeDefined()
   })
+})
 
+test('when blog post is added through POST, the database has one more blog', async () => {
+  const newBlog = {
+    title: "Type wars",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+    likes: 2
+  }
+
+  await api.post('/api/blogs', newBlog)
+  const response = await api.get('/api/blogs')
+  expect(response.body.length).toBe(initialBlogs.length + 1)
 })
 
 afterAll(() => {
