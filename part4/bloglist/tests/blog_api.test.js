@@ -77,6 +77,14 @@ test('when blog post is added through POST without title and url, a 400 error is
   expect(response.status).toBe(400)
 })
 
+test('when one blog post is deleted, the number of blog posts is lower by one', async () => {
+  const initialResponse = await api.get('/api/blogs')
+  const idToDelete = initialResponse.body[0].id
+  await api.delete(`/api/blogs/${idToDelete}`).expect(204)
+  const afterDeletionResponse = await api.get('/api/blogs')
+  expect(afterDeletionResponse.body.length).toBe(initialBlogs.length - 1)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
