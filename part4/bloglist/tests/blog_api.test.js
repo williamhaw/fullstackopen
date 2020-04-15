@@ -85,6 +85,16 @@ test('when one blog post is deleted, the number of blog posts is lower by one', 
   expect(afterDeletionResponse.body.length).toBe(initialBlogs.length - 1)
 })
 
+test('when the blog is updated, the change is reflected', async () => {
+  const initialResponse = await api.get('/api/blogs')
+  const updatedBlog = initialResponse.body[0]
+  const oldLikes = updatedBlog.likes
+  updatedBlog.likes = oldLikes + 1
+  await api.put(`/api/blogs/${updatedBlog.id}`).send(updatedBlog).expect(200)
+  const afterDeletionResponse = await api.get('/api/blogs')
+  expect(afterDeletionResponse.body[0].likes).toBe(oldLikes + 1)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
