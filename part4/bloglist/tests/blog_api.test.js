@@ -56,6 +56,18 @@ test('when blog post is added through POST, the database has one more blog', asy
   expect(response.body.length).toBe(initialBlogs.length + 1)
 })
 
+test('when blog post is added through POST without likes, the likes count defaults to 0', async () => {
+  const newBlog = {
+    title: "Type wars",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+    likes: 2
+  }
+
+  const response = await api.post('/api/blogs', newBlog)
+  expect(response.body.likes).toBe(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
