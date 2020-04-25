@@ -24,3 +24,12 @@ Content-Type: application/json
   "password": "passw0rd123",
   "name": "I am the admin"
 }
+
+###
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "passw0rd123"
+}
