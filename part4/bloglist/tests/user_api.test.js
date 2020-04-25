@@ -70,6 +70,58 @@ describe('when there is initially one user in db', () => {
   })
 })
 
+describe('when there is no user in the DB', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+  })
+
+  test('creating user fails when username not given', async () => {
+    const newUser = {
+      password: "123456"
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+  })
+
+  test('creating user fails when password not given', async () => {
+    const newUser = {
+      username: "123456"
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+  })
+
+  test('creating user fails when username length < 3', async () => {
+    const newUser = {
+      username: "12",
+      password: "123456"
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+  })
+
+  test('creating user fails when password length < 3', async () => {
+    const newUser = {
+      username: "123456",
+      password: "12"
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
