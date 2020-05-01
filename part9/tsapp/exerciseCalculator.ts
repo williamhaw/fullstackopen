@@ -8,7 +8,7 @@ interface Result {
   ratingExplanation: string;
 }
 
-const calculateExercises = (
+export const calculateExercises = (
   dailyHours: Array<number>,
   targetHours: number
 ): Result => {
