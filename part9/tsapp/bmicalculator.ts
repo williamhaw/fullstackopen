@@ -21,27 +21,29 @@ export const calculateBmi = (height: number, weight: number): string => {
 };
 
 interface BmiValues {
-  height: number,
-  weight: number
+  height: number;
+  weight: number;
 }
 
 const parseBmiArgs = (args: Array<string>): BmiValues => {
-  if(args.length > 4) throw new Error('too many arguments, enter height in cm and weight in kg')
-  if(args.length < 4) throw new Error('too few arguments, enter height in cm and weight in kg')
+  if (args.length > 4)
+    throw new Error("too many arguments, enter height in cm and weight in kg");
+  if (args.length < 4)
+    throw new Error("too few arguments, enter height in cm and weight in kg");
 
-  if(!isNaN(Number(args[2])) && !isNaN(Number(args[3]))){
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
     return {
       height: Number(args[2]),
-      weight: Number(args[3])
-    }
-  }else {
-    throw new Error('Provided values were not numbers!');
+      weight: Number(args[3]),
+    };
+  } else {
+    throw new Error("Provided values were not numbers!");
   }
-}
+};
 
 try {
-  const {height, weight} = parseBmiArgs(process.argv)
-  console.log(calculateBmi(height, weight))
+  const { height, weight } = parseBmiArgs(process.argv);
+  console.log(calculateBmi(height, weight));
 } catch (error) {
-  console.log('Error, something bad happened, message: ', error.message)
+  console.log("Error, something bad happened, message: ", error.message);
 }
