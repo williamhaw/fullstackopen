@@ -9,6 +9,6 @@ export interface Patient {
   name: string;
   dateOfBirth: string;
   ssn: string;
-  gender: "male" | "female";
+  gender: string;
   occupation: string;
 }
