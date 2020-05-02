@@ -1,5 +1,5 @@
 import patientsData from "../../data/patients";
-import { Patient } from "../../types";
+import { Patient, Gender } from "../../types";
 import { v4 as uuidv4 } from "uuid";
 
 const patients: Array<Patient> = patientsData;
@@ -27,14 +27,61 @@ const addEntry = (
 ): Patient => {
   const newPatientEntry: Patient = {
     id: uuidv4(),
-    name: name,
-    dateOfBirth: dateOfBirth,
-    ssn: ssn,
-    gender: gender,
-    occupation: occupation,
+    name: parseName(name),
+    dateOfBirth: parseDate(dateOfBirth),
+    ssn: parseSsn(ssn),
+    gender: parseGender(gender),
+    occupation: parseOccupation(occupation),
   };
   patients.push(newPatientEntry);
   return newPatientEntry;
+};
+
+const isString = (text: any): text is string => {
+  return typeof text === "string" || text instanceof String;
+};
+
+const isDate = (date: string): boolean => {
+  return Boolean(Date.parse(date));
+};
+
+const isGender = (param: any): param is Gender => {
+  return Object.values(Gender).includes(param);
+};
+
+const parseName = (name: any): string => {
+  if (!isString(name)) {
+    throw new Error("Incorrect or missing name: " + name);
+  }
+  return name;
+};
+
+const parseDate = (date: any): string => {
+  if (!date || !isString(date) || !isDate(date)) {
+    throw new Error("Incorrect or missing date: " + date);
+  }
+  return date;
+};
+
+const parseSsn = (ssn: any): string => {
+  if (!isString(ssn)) {
+    throw new Error("Incorrect or missing ssn: " + ssn);
+  }
+  return ssn;
+};
+
+const parseGender = (gender: any): Gender => {
+  if (!gender || !isGender(gender)) {
+    throw new Error("Incorrect or missing gender: " + gender);
+  }
+  return gender;
+};
+
+const parseOccupation = (occupation: any): string => {
+  if (!isString(occupation)) {
+    throw new Error("Incorrect or missing ssn: " + occupation);
+  }
+  return occupation;
 };
 
 export default { getEntries, getNonSensitiveEntries, addEntry };
