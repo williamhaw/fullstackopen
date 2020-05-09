@@ -2,42 +2,9 @@ import patientsData from "../../data/patients";
 import { Patient, Gender } from "../../types";
 import { v4 as uuidv4 } from "uuid";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 const patients: Array<Patient> = patientsData;
-
-const getEntries = (): Array<Patient> => {
-  return patients;
-};
-
-const getNonSensitiveEntries = (): Array<Omit<Patient, "ssn">> => {
-  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    occupation,
-    entries: []
-  }));
-};
-
-const addEntry = (
-  name: string,
-  dateOfBirth: string,
-  ssn: string,
-  gender: string,
-  occupation: string
-): Patient => {
-  const newPatientEntry: Patient = {
-    id: uuidv4(),
-    name: parseName(name),
-    dateOfBirth: parseDate(dateOfBirth),
-    ssn: parseSsn(ssn),
-    gender: parseGender(gender),
-    occupation: parseOccupation(occupation),
-    entries: []
-  };
-  patients.push(newPatientEntry);
-  return newPatientEntry;
-};
 
 const isString = (text: any): text is string => {
   return typeof text === "string" || text instanceof String;
@@ -84,6 +51,41 @@ const parseOccupation = (occupation: any): string => {
     throw new Error("Incorrect or missing ssn: " + occupation);
   }
   return occupation;
+};
+
+const getEntries = (): Array<Patient> => {
+  return patients;
+};
+
+const getNonSensitiveEntries = (): Array<Omit<Patient, "ssn">> => {
+  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+    id,
+    name,
+    dateOfBirth,
+    gender,
+    occupation,
+    entries: []
+  }));
+};
+
+const addEntry = (
+  name: string,
+  dateOfBirth: string,
+  ssn: string,
+  gender: string,
+  occupation: string
+): Patient => {
+  const newPatientEntry: Patient = {
+    id: uuidv4(),
+    name: parseName(name),
+    dateOfBirth: parseDate(dateOfBirth),
+    ssn: parseSsn(ssn),
+    gender: parseGender(gender),
+    occupation: parseOccupation(occupation),
+    entries: []
+  };
+  patients.push(newPatientEntry);
+  return newPatientEntry;
 };
 
 export default { getEntries, getNonSensitiveEntries, addEntry };
