@@ -15,6 +15,7 @@ const getNonSensitiveEntries = (): Array<Omit<Patient, "ssn">> => {
     dateOfBirth,
     gender,
     occupation,
+    entries: []
   }));
 };
 
@@ -32,6 +33,7 @@ const addEntry = (
     ssn: parseSsn(ssn),
     gender: parseGender(gender),
     occupation: parseOccupation(occupation),
+    entries: []
   };
   patients.push(newPatientEntry);
   return newPatientEntry;
