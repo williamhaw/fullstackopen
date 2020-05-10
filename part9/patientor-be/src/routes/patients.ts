@@ -9,7 +9,7 @@ router.get("/", (_req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  res.send(patientService.getNonSensitiveEntries().filter(e => e.id === req.params.id));
+  res.send(patientService.getEntries().filter(e => e.id === req.params.id));
 });
 
 router.post("/", (req, res) => {
