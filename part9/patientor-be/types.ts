@@ -21,3 +21,5 @@ export enum Gender {
   Female = "female",
   Other = "other",
 }
+
+export type PublicPatient = Omit<Patient, 'ssn' | 'entries' >
