@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useStateValue, Action } from "../state";
-import { Gender, Patient } from "../types";
+import { Gender, Patient, Entry } from "../types";
 import { Icon } from "semantic-ui-react";
 import axios from "axios";
 import { apiBaseUrl } from "../constants";
@@ -49,6 +49,16 @@ const PatientDetailsPage: React.FC = () => {
           </h1>
           <p>ssn: {patientDetails[id].ssn}</p>
           <p>occupation: {patientDetails[id].occupation}</p>
+          <h2>entries</h2>
+          {patientDetails[id].entries.map((entry: Entry) => (
+            <p key={entry.id}>{entry.description}
+            <ul>
+              {entry.diagnosisCodes?.map((code: string) => (
+                <li>{code}</li>
+              ))}
+            </ul>
+            </p>
+          ))}
         </div>
       ) : (
         <div>Patient not found.</div>
