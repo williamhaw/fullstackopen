@@ -7,7 +7,7 @@ import axios from "axios";
 import { apiBaseUrl } from "../constants";
 
 const PatientDetailsPage: React.FC = () => {
-  const [{ patientDetails }, dispatch] = useStateValue();
+  const [{ patientDetails, diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
   const setPatientDetails = (patient: Patient): Action => {
     return {
@@ -54,7 +54,7 @@ const PatientDetailsPage: React.FC = () => {
             <p key={entry.id}>{entry.description}
             <ul>
               {entry.diagnosisCodes?.map((code: string) => (
-                <li>{code}</li>
+                <li>{code} {diagnoses[code].name}</li>
               ))}
             </ul>
             </p>
