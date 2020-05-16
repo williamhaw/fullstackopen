@@ -21,9 +21,9 @@ const App: React.FC = () => {
   const setDiagnosesList = (diagnoses: Diagnosis[]): Action => {
     return {
       type: "SET_DIAGNOSES",
-      payload: diagnoses
-    }
-  }
+      payload: diagnoses,
+    };
+  };
   React.useEffect(() => {
     axios.get<void>(`${apiBaseUrl}/ping`);
 
@@ -47,7 +47,7 @@ const App: React.FC = () => {
         console.error(e);
       }
     };
-    Promise.all([fetchPatientList(), fetchDiagnoses()])
+    Promise.all([fetchPatientList(), fetchDiagnoses()]);
   }, [dispatch]);
 
   return (

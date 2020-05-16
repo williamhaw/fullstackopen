@@ -1,8 +1,16 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useStateValue, Action } from "../state";
-import { Gender, Patient, Entry } from "../types";
-import { Icon } from "semantic-ui-react";
+import {
+  Gender,
+  Patient,
+  Entry,
+  HospitalEntry,
+  HealthCheckEntry,
+  Diagnosis,
+  OccupationalHealthCareEntry,
+} from "../types";
+import { Icon, Segment } from "semantic-ui-react";
 import axios from "axios";
 import { apiBaseUrl } from "../constants";
 
@@ -51,19 +59,101 @@ const PatientDetailsPage: React.FC = () => {
           <p>occupation: {patientDetails[id].occupation}</p>
           <h2>entries</h2>
           {patientDetails[id].entries.map((entry: Entry) => (
-            <p key={entry.id}>{entry.description}
-            <ul>
-              {entry.diagnosisCodes?.map((code: string) => (
-                <li>{code} {diagnoses[code].name}</li>
-              ))}
-            </ul>
-            </p>
+            <EntryDetails key={entry.id} entry={entry} diagnoses={diagnoses} />
           ))}
         </div>
       ) : (
         <div>Patient not found.</div>
       )}
     </div>
+  );
+};
+
+const EntryDetails: React.FC<{
+  entry: Entry;
+  diagnoses: { [code: string]: Diagnosis };
+}> = ({ entry, diagnoses }) => {
+  switch (entry.type) {
+    case "Hospital":
+      return <HospitalDetail entry={entry} diagnoses={diagnoses} />;
+    case "OccupationalHealthcare":
+      return (
+        <OccupationalHealthcareDetail entry={entry} diagnoses={diagnoses} />
+      );
+    case "HealthCheck":
+      return <HealthCheckDetail entry={entry} diagnoses={diagnoses} />;
+    default:
+      throw new Error(
+        `Unhandled discriminated union member: ${JSON.stringify(entry)}`
+      );
+  }
+};
+
+const HealthCheckDetail: React.FC<{
+  entry: HealthCheckEntry;
+  diagnoses: { [code: string]: Diagnosis };
+}> = ({ entry, diagnoses }) => {
+  return (
+    <Segment>
+      <h2>
+        {entry.date} <Icon name="doctor" />
+      </h2>
+      <p>{entry.description}</p>
+      {entry.healthCheckRating <= 1 ? (
+        <Icon color="green" name="heart" />
+      ) : (
+        <Icon color="yellow" name="heart" />
+      )}
+      <ul>
+        {entry.diagnosisCodes?.map((code: string) => (
+          <li>
+            {code} {diagnoses[code] && diagnoses[code].name}
+          </li>
+        ))}
+      </ul>
+    </Segment>
+  );
+};
+
+const HospitalDetail: React.FC<{
+  entry: HospitalEntry;
+  diagnoses: { [code: string]: Diagnosis };
+}> = ({ entry, diagnoses }) => {
+  return (
+    <Segment>
+      <h2>
+        {entry.date} <Icon name="hospital" />
+      </h2>
+      <p>{entry.description}</p>
+      <ul>
+        {entry.diagnosisCodes?.map((code: string) => (
+          <li>
+            {code} {diagnoses[code] && diagnoses[code].name}
+          </li>
+        ))}
+      </ul>
+    </Segment>
+  );
+};
+
+const OccupationalHealthcareDetail: React.FC<{
+  entry: OccupationalHealthCareEntry;
+  diagnoses: { [code: string]: Diagnosis };
+}> = ({ entry, diagnoses }) => {
+  return (
+    <Segment>
+      <h2>
+        {entry.date} <Icon name="stethoscope" />
+      </h2>
+      <p>{entry.description}</p>
+      <ul>
+        {entry.diagnosisCodes?.map((code: string) => (
+          <li>
+            {code} {diagnoses[code] && diagnoses[code].name}
+          </li>
+        ))}
+      </ul>
+    </Segment>
   );
 };
 
