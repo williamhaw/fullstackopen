@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useStateValue } from "../state";
+import { useStateValue, Action } from "../state";
 import { Gender, Patient } from "../types";
 import { Icon } from "semantic-ui-react";
 import axios from "axios";
@@ -9,13 +9,19 @@ import { apiBaseUrl } from "../constants";
 const PatientDetailsPage: React.FC = () => {
   const [{ patientDetails }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
+  const setPatientDetails = (patient: Patient): Action => {
+    return {
+      type: "SET_PATIENT_DETAILS",
+      payload: patient,
+    };
+  };
 
   useEffect(() => {
     const fetchPatient = async () => {
       const { data: newPatients } = await axios.get<Patient[]>(
         `${apiBaseUrl}/patients/${id}`
       );
-      dispatch({ type: "SET_PATIENT_DETAILS", payload: newPatients[0] });
+      dispatch(setPatientDetails(newPatients[0]));
       console.log(newPatients[0]);
     };
     if (!patientDetails[id]) {
