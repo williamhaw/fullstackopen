@@ -1,5 +1,12 @@
 import patientsData from "../../data/patients";
-import { Patient, Gender } from "../../types";
+import {
+  Patient,
+  Gender,
+  Entry,
+  HealthCheckEntry,
+  OccupationalHealthCareEntry,
+  HospitalEntry,
+} from "../../types";
 import { v4 as uuidv4 } from "uuid";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -53,6 +60,21 @@ const parseOccupation = (occupation: any): string => {
   return occupation;
 };
 
+const parseEntries = (entries: any): Entry[] => {
+  if (
+    !Array.isArray(entries) &&
+    entries.filter(
+      (e) =>
+        e.type === "HealthCheck" ||
+        e.type === "OccupationalHealthcare" ||
+        e.type === "Hospital"
+    ).length === entries.length
+  ) {
+    throw new Error("Incorrect entries: " + entries);
+  }
+  return entries;
+};
+
 const getEntries = (): Array<Patient> => {
   return patients;
 };
@@ -64,7 +86,7 @@ const getNonSensitiveEntries = (): Array<Omit<Patient, "ssn">> => {
     dateOfBirth,
     gender,
     occupation,
-    entries: []
+    entries: [],
   }));
 };
 
@@ -73,7 +95,8 @@ const addEntry = (
   dateOfBirth: string,
   ssn: string,
   gender: string,
-  occupation: string
+  occupation: string,
+  entries: Entry[]
 ): Patient => {
   const newPatientEntry: Patient = {
     id: uuidv4(),
@@ -82,7 +105,7 @@ const addEntry = (
     ssn: parseSsn(ssn),
     gender: parseGender(gender),
     occupation: parseOccupation(occupation),
-    entries: []
+    entries: parseEntries(entries),
   };
   patients.push(newPatientEntry);
   return newPatientEntry;
