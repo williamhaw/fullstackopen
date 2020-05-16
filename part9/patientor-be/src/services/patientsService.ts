@@ -61,7 +61,7 @@ const parseEntries = (entries: any): Entry[] => {
   if (
     !Array.isArray(entries) &&
     entries.filter(
-      (e) =>
+      (e: { type: string; }) =>
         e.type === "HealthCheck" ||
         e.type === "OccupationalHealthcare" ||
         e.type === "Hospital"
