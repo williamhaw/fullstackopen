@@ -75,13 +75,6 @@ const parseEntries = (entries: any): Entry[] => {
   return entries;
 };
 
-const parseEntryId = (id: any): string => {
-  if (!isString(id)) {
-    throw new Error("Incorrect or missing entry id: " + id);
-  }
-  return id;
-};
-
 const parseEntryDescription = (description: any): string => {
   if (!isString(description)) {
     throw new Error("Incorrect or missing entry description: " + description);
@@ -217,7 +210,6 @@ const addPatientEntry = (
 };
 
 const createEntry = (
-  id: any,
   description: any,
   date: any,
   specialist: any,
@@ -231,7 +223,7 @@ const createEntry = (
   switch (parseEntryType(type)) {
     case "HealthCheck":
       return {
-        id: parseEntryId(id),
+        id: uuidv4(),
         description: parseEntryDescription(description),
         date: parseDate(date),
         specialist: parseEntrySpecialist(specialist),
@@ -241,7 +233,7 @@ const createEntry = (
       };
     case "Hospital":
       return {
-        id: parseEntryId(id),
+        id: uuidv4(),
         description: parseEntryDescription(description),
         date: parseDate(date),
         specialist: parseEntrySpecialist(specialist),
@@ -251,7 +243,7 @@ const createEntry = (
       };
     case "OccupationalHealthcare":
       return {
-        id: parseEntryId(id),
+        id: uuidv4(),
         description: parseEntryDescription(description),
         date: parseDate(date),
         specialist: parseEntrySpecialist(specialist),
@@ -267,7 +259,6 @@ const createEntry = (
 
 const addEntry = (
   patientId: string,
-  id: any,
   description: any,
   date: any,
   specialist: any,
@@ -281,7 +272,6 @@ const addEntry = (
   const patient = patients.find((p) => p.id === patientId);
 
   const newEntry: Entry = createEntry(
-    id,
     description,
     date,
     specialist,

@@ -17,7 +17,7 @@ const initialState: State = {
 
 export const StateContext = createContext<[State, React.Dispatch<Action>]>([
   initialState,
-  () => initialState
+  () => initialState,
 ]);
 
 type StateProviderProps = {
@@ -27,7 +27,7 @@ type StateProviderProps = {
 
 export const StateProvider: React.FC<StateProviderProps> = ({
   reducer,
-  children
+  children,
 }: StateProviderProps) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return (

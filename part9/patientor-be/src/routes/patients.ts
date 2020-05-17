@@ -26,7 +26,6 @@ router.post("/", (req, res) => {
 
 router.post("/:id/entries", (req, res) => {
   const {
-    id,
     description,
     date,
     specialist,
@@ -39,7 +38,6 @@ router.post("/:id/entries", (req, res) => {
   } = req.body;
   const patientEntry = patientService.addEntry(
     req.params.id,
-    id,
     description,
     date,
     specialist,

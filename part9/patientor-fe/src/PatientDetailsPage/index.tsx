@@ -10,9 +10,11 @@ import {
   Diagnosis,
   OccupationalHealthCareEntry,
 } from "../types";
-import { Icon, Segment } from "semantic-ui-react";
+import { Icon, Segment, Button } from "semantic-ui-react";
 import axios from "axios";
 import { apiBaseUrl } from "../constants";
+import AddEntryModal from "../AddEntryModal";
+import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
 
 const PatientDetailsPage: React.FC = () => {
   const [{ patientDetails, diagnoses }, dispatch] = useStateValue();
@@ -48,6 +50,32 @@ const PatientDetailsPage: React.FC = () => {
     }
   };
 
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | undefined>();
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
+
+  const submitNewEntry = async (values: EntryFormValues) => {
+    try {
+      const { data: newEntry } = await axios.post<Entry>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+        );
+        console.log(newEntry);
+      patientDetails[id].entries.push(newEntry);
+      dispatch(setPatientDetails(patientDetails[id]));
+      closeModal();
+    } catch (e) {
+      console.error(e.response.data);
+      setError(e.response.data.error);
+    }
+  };
+
   return (
     <div>
       {patientDetails[id] ? (
@@ -57,6 +85,7 @@ const PatientDetailsPage: React.FC = () => {
           </h1>
           <p>ssn: {patientDetails[id].ssn}</p>
           <p>occupation: {patientDetails[id].occupation}</p>
+          <Button onClick={() => openModal()}>Add New Entry</Button>
           <h2>entries</h2>
           {patientDetails[id].entries.map((entry: Entry) => (
             <EntryDetails key={entry.id} entry={entry} diagnoses={diagnoses} />
@@ -65,6 +94,12 @@ const PatientDetailsPage: React.FC = () => {
       ) : (
         <div>Patient not found.</div>
       )}
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onSubmit={submitNewEntry}
+        error={error}
+        onClose={closeModal}
+      />
     </div>
   );
 };
@@ -106,7 +141,7 @@ const HealthCheckDetail: React.FC<{
       )}
       <ul>
         {entry.diagnosisCodes?.map((code: string) => (
-          <li>
+          <li key={code}>
             {code} {diagnoses[code] && diagnoses[code].name}
           </li>
         ))}
@@ -127,7 +162,7 @@ const HospitalDetail: React.FC<{
       <p>{entry.description}</p>
       <ul>
         {entry.diagnosisCodes?.map((code: string) => (
-          <li>
+          <li key={code}>
             {code} {diagnoses[code] && diagnoses[code].name}
           </li>
         ))}
@@ -148,7 +183,7 @@ const OccupationalHealthcareDetail: React.FC<{
       <p>{entry.description}</p>
       <ul>
         {entry.diagnosisCodes?.map((code: string) => (
-          <li>
+          <li key={code}>
             {code} {diagnoses[code] && diagnoses[code].name}
           </li>
         ))}
