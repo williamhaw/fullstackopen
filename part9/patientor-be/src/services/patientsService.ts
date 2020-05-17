@@ -1,9 +1,5 @@
 import patientsData from "../../data/patients";
-import {
-  Patient,
-  Gender,
-  Entry,
-} from "../../types";
+import { Patient, Gender, Entry } from "../../types";
 import { v4 as uuidv4 } from "uuid";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -61,7 +57,7 @@ const parseEntries = (entries: any): Entry[] => {
   if (
     !Array.isArray(entries) &&
     entries.filter(
-      (e: { type: string; }) =>
+      (e: { type: string }) =>
         e.type === "HealthCheck" ||
         e.type === "OccupationalHealthcare" ||
         e.type === "Hospital"
@@ -87,7 +83,7 @@ const getNonSensitiveEntries = (): Array<Omit<Patient, "ssn">> => {
   }));
 };
 
-const addEntry = (
+const addPatientEntry = (
   name: string,
   dateOfBirth: string,
   ssn: string,
@@ -108,4 +104,17 @@ const addEntry = (
   return newPatientEntry;
 };
 
-export default { getEntries, getNonSensitiveEntries, addEntry };
+const addEntry = (patientId: string, entry: Entry): Entry => {
+  const patient = patients.find((p) => p.id === patientId);
+  if (patient) {
+    patient.entries.push(entry);
+  }
+  return entry;
+};
+
+export default {
+  getEntries,
+  getNonSensitiveEntries,
+  addPatientEntry,
+  addEntry,
+};
