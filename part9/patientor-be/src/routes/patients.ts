@@ -8,7 +8,7 @@ router.get("/", (_req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  res.send(patientService.getEntries().filter(e => e.id === req.params.id));
+  res.send(patientService.getEntries().filter((e) => e.id === req.params.id));
 });
 
 router.post("/", (req, res) => {
@@ -25,10 +25,30 @@ router.post("/", (req, res) => {
 });
 
 router.post("/:id/entries", (req, res) => {
-  const { entry } = req.body;
+  const {
+    id,
+    description,
+    date,
+    specialist,
+    type,
+    diagnosisCodes,
+    healthCheckRating,
+    discharge,
+    sickLeave,
+    employerName,
+  } = req.body;
   const patientEntry = patientService.addEntry(
     req.params.id,
-    entry
+    id,
+    description,
+    date,
+    specialist,
+    type,
+    diagnosisCodes,
+    healthCheckRating,
+    discharge,
+    sickLeave,
+    employerName
   );
   res.json(patientEntry);
 });
