@@ -1,5 +1,5 @@
 import React from "react";
-import { HealthCheckRating, HealthCheckEntry } from "../types";
+import { HealthCheckRating, HealthCheckEntry, Entry } from "../types";
 import { Field, Formik, Form } from "formik";
 import { TextField, DiagnosisSelection } from "../AddPatientModal/FormField";
 import { Grid, Button, Form as ReactForm } from "semantic-ui-react";
@@ -24,6 +24,16 @@ const ratingOptions: RatingOption[] = [
   { value: HealthCheckRating.CriticalRisk, label: "Critical Risk" },
 ];
 
+export type EntryTypeOption = {
+  value: Entry["type"];
+  label: string;
+};
+
+const entryTypeOptions: EntryTypeOption[] = [
+  { value: "HealthCheck", label: "HealthCheck" },
+  { value: "Hospital", label: "Hospital" },
+];
+
 const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
   const [{ diagnoses }] = useStateValue();
   return (
@@ -43,11 +53,13 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         if (!values.description) {
           errors.description = requiredError;
         }
-        const dateRegex = new RegExp('^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])$')
+        const dateRegex = new RegExp(
+          "^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])$"
+        );
         if (!values.date) {
           errors.date = requiredError;
-        }else if(!dateRegex.test(values.date)){
-            errors.date = "Date is in the wrong format"
+        } else if (!dateRegex.test(values.date)) {
+          errors.date = "Date is in the wrong format";
         }
         if (!values.specialist) {
           errors.specialist = requiredError;
@@ -55,7 +67,7 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         return errors;
       }}
     >
-      {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
+      {({ isValid, dirty, setFieldValue, setFieldTouched, values }) => {
         return (
           <Form className="form ui">
             <Field
@@ -82,19 +94,47 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
               diagnoses={Object.values(diagnoses)}
             />
             <ReactForm.Field>
-              <label>Healthcheck Rating</label>
-              <Field
-                as="select"
-                name="healthCheckRating"
-                className="ui dropdown"
-              >
-                {ratingOptions.map((option) => (
+              <label>Entry Type</label>
+              <Field as="select" name="type" className="ui dropdown">
+                {entryTypeOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label || option.value}
                   </option>
                 ))}
               </Field>
             </ReactForm.Field>
+            {String(values.type) === "HealthCheck" && (
+              <ReactForm.Field>
+                <label>Healthcheck Rating</label>
+                <Field
+                  as="select"
+                  name="healthCheckRating"
+                  className="ui dropdown"
+                >
+                  {ratingOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label || option.value}
+                    </option>
+                  ))}
+                </Field>
+              </ReactForm.Field>
+            )}
+            {String(values.type) === "Hospital" && (
+              <Field
+                label="Discharge Date"
+                placeholder="YYY-MM-DD"
+                name="discharge.date"
+                component={TextField}
+              />
+            )}
+            {String(values.type) === "Hospital" && (
+              <Field
+                label="Criteria"
+                placeholder=""
+                name="discharge.criteria"
+                component={TextField}
+              />
+            )}
             <Grid>
               <Grid.Column floated="left" width={5}>
                 <Button type="button" onClick={onCancel} color="red">
