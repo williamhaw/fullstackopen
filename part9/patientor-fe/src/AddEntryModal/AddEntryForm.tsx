@@ -1,11 +1,11 @@
 import React from "react";
-import { HealthCheckRating, HealthCheckEntry, Entry } from "../types";
+import { HealthCheckRating, Entry } from "../types";
 import { Field, Formik, Form } from "formik";
 import { TextField, DiagnosisSelection } from "../AddPatientModal/FormField";
 import { Grid, Button, Form as ReactForm } from "semantic-ui-react";
 import { useStateValue } from "../state";
 
-export type EntryFormValues = Omit<HealthCheckEntry, "id">;
+export type EntryFormValues = Omit<Entry, "id">;
 
 interface Props {
   onSubmit: (values: EntryFormValues) => void;
@@ -32,6 +32,7 @@ export type EntryTypeOption = {
 const entryTypeOptions: EntryTypeOption[] = [
   { value: "HealthCheck", label: "HealthCheck" },
   { value: "Hospital", label: "Hospital" },
+  { value: "OccupationalHealthcare", label: "OccupationalHealthcare" },
 ];
 
 const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
@@ -44,7 +45,6 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         specialist: "",
         diagnosisCodes: [],
         type: "HealthCheck",
-        healthCheckRating: HealthCheckRating.Healthy,
       }}
       onSubmit={onSubmit}
       validate={(values) => {
@@ -64,6 +64,7 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
+
         return errors;
       }}
     >
@@ -103,7 +104,7 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
                 ))}
               </Field>
             </ReactForm.Field>
-            {String(values.type) === "HealthCheck" && (
+            {values.type === "HealthCheck" && (
               <ReactForm.Field>
                 <label>Healthcheck Rating</label>
                 <Field
@@ -119,19 +120,43 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
                 </Field>
               </ReactForm.Field>
             )}
-            {String(values.type) === "Hospital" && (
+            {values.type === "Hospital" && (
               <Field
                 label="Discharge Date"
-                placeholder="YYY-MM-DD"
+                placeholder="YYYY-MM-DD"
                 name="discharge.date"
                 component={TextField}
               />
             )}
-            {String(values.type) === "Hospital" && (
+            {values.type === "Hospital" && (
               <Field
                 label="Criteria"
                 placeholder=""
                 name="discharge.criteria"
+                component={TextField}
+              />
+            )}
+            {values.type === "OccupationalHealthcare" && (
+              <Field
+                label="Employer Name"
+                placeholder=""
+                name="employerName"
+                component={TextField}
+              />
+            )}
+            {values.type === "OccupationalHealthcare" && (
+              <Field
+                label="Sick Leave Start Date"
+                placeholder="YYYY-MM-DD"
+                name="sickLeave.startDate"
+                component={TextField}
+              />
+            )}
+            {values.type === "OccupationalHealthcare" && (
+              <Field
+                label="Sick Leave End Date"
+                placeholder="YYYY-MM-DD"
+                name="sickLeave.endDate"
                 component={TextField}
               />
             )}
